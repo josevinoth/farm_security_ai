@@ -4,7 +4,6 @@ import cv2
 img=cv2.imread('images/football_team.jpg',0)
 template=cv2.imread('images/shoe_2.jpg',0)
 h,w=template.shape
-print(template)
 methods=[cv2.TM_CCOEFF,cv2.TM_CCOEFF_NORMED,cv2.TM_CCORR,cv2.TM_CCORR_NORMED,cv2.TM_SQDIFF,cv2.TM_SQDIFF_NORMED]
 
 for method in methods:
