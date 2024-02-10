@@ -1,0 +1,16 @@
+<!-- templates/index_1.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Detection</title>
+</head>
+<body>
+    <h1>Animal Detection</h1>
+    <form action="/detect" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Detect</button>
+    </form>
+</body>
+</html>

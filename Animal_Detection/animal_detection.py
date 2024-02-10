@@ -24,8 +24,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-train_dir='images/animals'
-val_dir='images/val_dir'
+train_dir= '../images/animals'
+val_dir= '../images/val_dir'
 
 train_class_labels=os.listdir(train_dir)
 # print(train_class_labels)
@@ -192,7 +192,7 @@ print('Train Accuracy', score[1])
 predict_images=model.predict(x_train)
 
 model_structure=model.to_json()
-f=Path("model/model_structure.json")
+f=Path("Animal_Detection/model/model_structure.json")
 f.write_text(model_structure)
-model.save_weights('model/model_weights.h5')
-model.save('model/full_model.h5')
+model.save_weights('Animal_Detection/model/model_weights.h5')
+model.save('Animal_Detection/model/full_model.h5')
