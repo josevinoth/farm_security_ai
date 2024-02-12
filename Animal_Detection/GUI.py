@@ -7,7 +7,7 @@ import numpy as np
 from keras.preprocessing import image
 
 #load the trained model to classify Animals
-model = load_model('model/full_model.h5')
+model = load_model('../model/full_model.h5')
 #dictionary to label all traffic signs class.
 classes = { 0:'Bee',
                 1: 'Beetle',

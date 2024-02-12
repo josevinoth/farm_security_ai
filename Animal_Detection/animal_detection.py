@@ -1,28 +1,17 @@
 import os
-import h5py
 import warnings
 import itertools
-
 from keras.preprocessing import image
 from keras.src.utils import np_utils
 warnings.filterwarnings('ignore')
-import cv2 as cv
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from pathlib import Path
-from keras import models
-from keras.utils import to_categorical
 from keras.layers import Dense,Dropout,Conv2D,MaxPooling2D,Flatten
 from keras.optimizers import Adam
-from keras import losses
-from keras import metrics
 from keras.models import Sequential
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from sklearn.metrics import accuracy_score
 
 train_dir= '../images/animals'
 val_dir= '../images/val_dir'
@@ -191,8 +180,8 @@ print('Train Accuracy', score[1])
 
 predict_images=model.predict(x_train)
 
-model_structure=model.to_json()
-f=Path("Animal_Detection/model/model_structure.json")
-f.write_text(model_structure)
-model.save_weights('Animal_Detection/model/model_weights.h5')
-model.save('Animal_Detection/model/full_model.h5')
+# model_structure=model.to_json()
+# f=Path('Animal_Detection/model/model_structure.json')
+# f.write_text(model_structure)
+model.save_weights('../model/model_weights.h5')
+model.save('../model/full_model.h5')
