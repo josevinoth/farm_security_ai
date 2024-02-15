@@ -6,8 +6,8 @@ from sendgrid.helpers.mail import Mail
 sendgrid_api_key = 'your_sendgrid_api_key'
 
 # Email details
-sender_email = '***********@example.com'
-recipient_email = '***********@example.com'
+sender_email = 'josevinoth83@gmail.com'
+recipient_email = 'josevinoth83@gmail.com'
 subject = 'New Object Identified'
 message_content = 'Hi, Group of Elephants identified near Zone 1'
 
