@@ -5,97 +5,102 @@ from PIL import ImageTk, Image
 from keras.models import load_model
 import numpy as np
 from keras.preprocessing import image
+import serial
+import time
 
 #load the trained model to classify Animals
-model = load_model('../Animal_Detection/model/full_model.h5')
+model = load_model('model/full_model_old.h5')
 #dictionary to label all traffic signs class.
 classes = { 0:'Bee',
-                1: 'Beetle',
-                2: 'Bison',
-                3: 'Boar',
-                4: 'Butterfly',
-                5: 'Cat',
-                6: 'Caterpillar',
-                7: 'Chimpanzee',
-                8: 'Cockroach',
-                9: 'Cow',
-                10: 'Coyote',
-                11: 'Crab',
-                12: 'Crow',
-                13: 'Deer',
-                14: 'Dog',
-                15: 'Dolphin',
-                16: 'Donkey',
-                17: 'Dragonfly',
-                18: 'Duck',
-                19: 'Eagle',
-                20: 'Elephant',
-                21: 'Fire',
-                22: 'Flamingo',
-                23: 'Fly',
-                24: 'Fox',
-                25: 'Goat',
-                26: 'Goldfish',
-                27: 'Goose',
-                28: 'Gorilla',
-                29: 'Grasshopper',
-                30: 'Hamster',
-                31: 'Hare',
-                32: 'Hedgehog',
-                33: 'Hippopotamus',
-                34: 'Hornbill',
-                35: 'Horse',
-                36: 'Hummingbird',
-                37: 'Hyena',
-                38: 'Jellyfish',
-                39: 'Kangaroo',
-                40: 'Koala',
-                41: 'Ladybugs',
-                42: 'Leopard',
-                43: 'Lion',
-                44: 'Lizard',
-                45: 'Lobster',
-                46: 'Mosquito',
-                47: 'Moth',
-                48: 'Mouse',
-                49: 'Octopus',
-                50: 'Okapi',
-                51: 'Orangutan',
-                52: 'Otter',
-                53: 'Owl',
-                54: 'Ox',
-                55: 'Oyster',
-                56: 'Panda',
-                57: 'Parrot',
-                58: 'Pelecaniformes',
-                59: 'Penguin',
-                60: 'Pig',
-                61: 'Pigeon',
-                62: 'Porcupine',
-                63: 'Possum',
-                64: 'Raccoon',
-                65: 'Rat',
-                66: 'Reindeer',
-                67: 'Rhinoceros',
-                68: 'Sandpiper',
-                69: 'Seahorse',
-                70: 'Seal',
-                71: 'Shark',
-                72: 'Sheep',
-                73: 'Snake',
-                74: 'Sparrow',
-                75: 'Squid',
-                76: 'Squirrel',
-                77: 'Starfish',
-                78: 'Swan',
-                79: 'Tiger',
-                80: 'Turkey',
-                81: 'Turtle',
-                82: 'Whale',
-                83: 'Wolf',
-                84: 'Wombat',
-                85: 'Woodpecker',
-                86: 'Zebra',}
+1: 'Beetle',
+2: 'Bison',
+3: 'Boar',
+4: 'Butterfly',
+5: 'Cat',
+6: 'Caterpillar',
+7: 'Chimpanzee',
+8: 'Cockroach',
+9: 'Cow',
+10: 'Coyote',
+11: 'Crab',
+12: 'Crow',
+13: 'Deer',
+14: 'Dog',
+15: 'Dolphin',
+16: 'Donkey',
+17: 'Dragonfly',
+18: 'Duck',
+19: 'Eagle',
+20: 'Elephant',
+21: 'Fire',
+22: 'Flamingo',
+23: 'Fly',
+24: 'Fox',
+25: 'Goat',
+26: 'Goldfish',
+27: 'Goose',
+28: 'Gorilla',
+29: 'Grasshopper',
+30: 'Hamster',
+31: 'Hare',
+32: 'Hedgehog',
+33: 'Hippopotamus',
+34: 'Hornbill',
+35: 'Horse',
+36: 'Human',
+37: 'Hummingbird',
+38: 'Hyena',
+39: 'Jellyfish',
+40: 'Kangaroo',
+41: 'Koala',
+42: 'Ladybugs',
+43: 'Leopard',
+44: 'Lion',
+45: 'Lizard',
+46: 'Lobster',
+47: 'Mosquito',
+48: 'Moth',
+49: 'Mouse',
+50: 'Octopus',
+51: 'Okapi',
+52: 'Orangutan',
+53: 'Otter',
+54: 'Owl',
+55: 'Ox',
+56: 'Oyster',
+57: 'Panda',
+58: 'Parrot',
+59: 'Pelecaniformes',
+60: 'Penguin',
+61: 'Pig',
+62: 'Pigeon',
+63: 'Porcupine',
+64: 'Possum',
+65: 'Raccoon',
+66: 'Rat',
+67: 'Reindeer',
+68: 'Rhinoceros',
+69: 'Sandpiper',
+70: 'Seahorse',
+71: 'Seal',
+72: 'Shark',
+73: 'Sheep',
+74: 'Snake',
+75: 'Sparrow',
+76: 'Squid',
+77: 'Squirrel',
+78: 'Starfish',
+79: 'Swan',
+80: 'Tiger',
+81: 'Turkey',
+82: 'Turtle',
+83: 'Whale',
+84: 'Wolf',
+85: 'Wombat',
+86: 'Woodpecker',
+87: 'Zebra',}
+
+
 #initialize GUI
 top=tk.Tk()
 top.geometry('800x600')
@@ -111,10 +116,30 @@ def classify(file_path):
     image = np.array(image)
     # pred = model.predict([image])[0]
     pred = detect_objects(file_path)
+    print('pred',pred)
     # pred = 'Fire'
     # sign = classes[pred]
     # print(sign)
-    label.configure(foreground='#011638', text=pred)
+    label.configure(foreground='#FF0000', text=pred)
+
+    arduino_port = "COM3"  # Replace with your actual COM port (e.g., COM3)
+    baud_rate = 9600
+    ser = serial.Serial(arduino_port, baud_rate)
+    time.sleep(2)  # Allow time for Arduino to reset
+    if pred == 'Beetle':
+        object_id = '1'
+    else:
+        object_id = '0'
+    user_input = object_id
+    if user_input == '1' or user_input == '0':
+        # time.sleep(1)
+        ser.write(user_input.encode())
+        # time.sleep(1)
+        print("Exiting the script")
+        ser.close()
+    else:
+        print("Invalid input. Enter '1' or '0'.")
+        ser.close()
 def show_classify_button(file_path):
     classify_b=Button(top,text="Classify Image",command=lambda: classify(file_path),padx=10,pady=5)
     classify_b.configure(background='#364156', foreground='white',font=('arial',10,'bold'))

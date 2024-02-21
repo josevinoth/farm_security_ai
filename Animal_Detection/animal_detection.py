@@ -36,7 +36,7 @@ for label in val_class_labels:
 
 nb_train_samples=train_total
 nb_val_samples=val_total
-num_classes=87
+num_classes=88
 img_rows=128
 img_cols=128
 channel=3
@@ -183,5 +183,5 @@ predict_images=model.predict(x_train)
 # model_structure=model.to_json()
 # f=Path('Animal_Detection/model/model_structure.json')
 # f.write_text(model_structure)
-model.save_weights('../model/model_weights.h5')
-model.save('../model/full_model.h5')
+model.save_weights('model/model_weights_old.h5')
+model.save('model/full_model_old.h5')
