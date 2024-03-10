@@ -80,7 +80,7 @@ for label in val_class_labels:
         try:
             img=image.load_img(os.path.join(val_dir,label,image_name),target_size=(img_rows,img_rows,channel))
             img=image.img_to_array(img)
-            img=img/255
+            img=img/255.0
             x_test.append(img)
             y_test.append(j)
         except:
