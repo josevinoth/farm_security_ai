@@ -1,7 +1,7 @@
 import serial
 import time
 
-arduino_port = "COM3"  # Replace with your actual COM port (e.g., COM3)
+arduino_port = ""  # Replace with your actual COM port (e.g., COM3)
 baud_rate = 9600
 
 ser = serial.Serial(arduino_port, baud_rate)
