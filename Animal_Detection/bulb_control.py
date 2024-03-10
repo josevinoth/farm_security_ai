@@ -1,34 +1,36 @@
 import requests
 
-# Replace with your NodeMCU's IP address and port
-nodemcu_ip = "192.168.1.100"
-nodemcu_port = 80
+# Replace with the IP address or hostname of your NodeMCU
+nodeMCU_ip = "192.168.1.23"
+relay_endpoint = "/deactivate_relay"  # Change this endpoint based on your NodeMCU code
 
-# Function to control the relay
-def control_relay(input_value):
-    url = f"http://{nodemcu_ip}:{nodemcu_port}/control?input={input_value}"
-
+# Function to send a signal to control the relay
+def control_relay(relay_endpoint):
     try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            print(f"Relay control successful. Input: {input_value}")
-        else:
-            print(f"Failed to control relay. Status code: {response.status_code}")
+        # Send an HTTP GET request to control the relay
+        requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
+
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Error: {e}")
 
-# Take user input for relay control
-while True:
-    user_input = input("Enter 1 to switch on, 0 to switch off, or q to quit: ")
-
-    if user_input.lower() == 'q':
-        break
-
+if __name__ == "__main__":
     try:
-        input_value = int(user_input)
-        if input_value == 0 or input_value == 1:
-            control_relay(input_value)
-        else:
-            print("Invalid input. Please enter 0 to switch off or 1 to switch on.")
-    except ValueError:
-        print("Invalid input. Please enter a valid number.")
+        while True:
+            user_input = input("Enter 1 to activate relay, 0 to deactivate, or any other key to exit: ")
+
+            if user_input.isdigit():  # Check if the input is a digit
+                value = int(user_input)
+                if value ==0:
+                    relay_endpoint = "/deactivate_relay"
+                    control_relay(relay_endpoint)
+                elif value==1:
+                    relay_endpoint = "/activate_relay"
+                    control_relay(relay_endpoint)
+                else:
+                    print("Invalid input. Please enter 1 to activate or 0 to deactivate.")
+            else:
+                print("Exiting the script.")
+                break
+
+    except KeyboardInterrupt:
+        print("Script terminated by user.")

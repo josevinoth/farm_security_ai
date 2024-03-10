@@ -8,7 +8,7 @@ import serial
 import time
 
 # Load the trained model to classify Animals
-model = load_model('model/full_model_old.h5')
+model = load_model('../model/full_model.h5')
 
 # Dictionary to label all traffic signs class.
 classes = {0:'Bee',

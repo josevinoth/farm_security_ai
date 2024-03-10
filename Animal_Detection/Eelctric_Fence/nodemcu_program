@@ -1,0 +1,49 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char* ssid = "walter_airtel";
+const char* password = "22741672";
+ESP8266WebServer server(80);
+
+// Relay pin
+const int relayPin = D7;  // Change to the actual pin connected to your relay
+
+void setup() {
+  Serial.begin(115200);
+
+  // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // Setup relay pin
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH);  // Initial state: relay is deactivated
+
+  // Setup HTTP endpoints to control the relay
+  server.on("/activate_relay", HTTP_GET, []() {
+    digitalWrite(relayPin, LOW);  // Activate the relay
+    server.send(200, "text/plain", "Relay activated");
+  });
+
+  server.on("/deactivate_relay", HTTP_GET, []() {
+    digitalWrite(relayPin, HIGH);  // Deactivate the relay
+    server.send(200, "text/plain", "Relay deactivated");
+  });
+
+  // Start server
+  server.begin(80);
+
+  // Print server started message with IP address
+  Serial.print("Server started at http://");
+  Serial.print(WiFi.localIP());
+  Serial.println("/");
+}
+
+void loop() {
+  server.handleClient();
+  // Additional loop logic can be added here if needed
+}
