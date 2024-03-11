@@ -1,13 +1,9 @@
 from tkinter import *
-
 import requests
 from PIL import ImageTk, Image
 from keras.models import load_model
 import numpy as np
-from keras.preprocessing import image
 import cv2
-import serial
-import time
 
 # Load the trained model to classify Animals
 model = load_model('../model/full_model.h5')
@@ -153,24 +149,6 @@ def classify(frame):
             print("Invalid input. Please enter 1 to activate or 0 to deactivate.")
     else:
         print("Exiting the script.")
-
-    # # Arduino communication (replace with your logic)
-    # arduino_port = "COM3"
-    # baud_rate = 9600
-    # ser = serial.Serial(arduino_port, baud_rate)
-    # time.sleep(2)
-    # if pred == 'Human':
-    #     object_id = '0'
-    # else:
-    #     object_id = '1'
-    # user_input = object_id
-    # if user_input == '1' or user_input == '0':
-    #     ser.write(user_input.encode())
-    #     print("Exiting the script")
-    #     ser.close()
-    # else:
-    #     print("Invalid input. Enter '1' or '0'.")
-    #     ser.close()
 
     # Clear the image after 5 seconds
     root.after(5000, clear_image)
