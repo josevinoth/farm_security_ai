@@ -126,16 +126,16 @@ def classify(frame):
     print('pred', pred)
     label.configure(foreground='#FF0000', text=pred)
 
-    if pred == 'Human':
+    if pred == 'Pig':
         user_input = '0'
     else:
         user_input = '1'
 
     if user_input.isdigit():  # Check if the input is a digit
         value = int(user_input)
+        nodeMCU_ip = "192.168.1.100"
         if value == 0:
             try:
-                nodeMCU_ip = "192.168.1.23"
                 relay_endpoint = "/deactivate_relay"  # Change this endpoint based on your NodeMCU code
                 # Send an HTTP GET request to control the relay
                 requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
@@ -143,7 +143,6 @@ def classify(frame):
                 print(f"Error: {e}")
         elif value == 1:
             try:
-                nodeMCU_ip = "192.168.1.23"
                 relay_endpoint = "/activate_relay"  # Change this endpoint based on your NodeMCU code
                 # Send an HTTP GET request to control the relay
                 requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
@@ -174,12 +173,12 @@ def classify(frame):
     #     ser.close()
 
     # Clear the image after 5 seconds
-    # root.after(5000, clear_image)
+    root.after(5000, clear_image)
 
 
-# def clear_image():
-#     sign_image.configure(image=None)
-#     # label.configure(text='')
+def clear_image():
+    sign_image.configure(image=None)
+    # label.configure(text='')
 
 
 def detect_objects(frame):
