@@ -1,3 +1,6 @@
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from tkinter import *
 import requests
 from PIL import ImageTk, Image
@@ -106,6 +109,25 @@ root.configure(background='#CDCDCD')
 label = Label(root, background='#CDCDCD', font=('arial', 15, 'bold'))
 sign_image = Label(root)
 
+def send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, sender_password):
+    # Create the email message
+    message = MIMEMultipart()
+    message['From'] = sender_email
+    message['To'] = to_email
+    message['Subject'] = subject
+
+    # Attach the body of the email
+    message.attach(MIMEText(body, 'plain'))
+
+    # Connect to the SMTP server
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        # Log in to the SMTP server
+        server.starttls()
+        server.login(sender_email, sender_password)
+
+        # Send the email
+        server.sendmail(sender_email, to_email, message.as_string())
+
 def classify(frame):
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
@@ -126,6 +148,18 @@ def classify(frame):
         user_input = '0'
     else:
         user_input = '1'
+
+    # Replace the following variables with your own values
+    subject = str('Alert:')+str(pred)+str(' nearing your Farm')
+    body = "Dear Owner,\n\n\t" + str(pred) + " captured near Zone 1.\n\tPlease take immediate action.\n\nRegards,\nAI Team"
+    to_email = "wfranciska01@gmail.com"
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "josevinoth83@gmail.com"
+    sender_password = "gfrt qlnu rzgt ytba"
+
+    # Call the function to send the email
+    send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, sender_password)
 
     if user_input.isdigit():  # Check if the input is a digit
         value = int(user_input)
@@ -194,3 +228,4 @@ heading.configure(background='#CDCDCD', foreground='#364156')
 heading.pack()
 
 root.mainloop()
+
