@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import filedialog
 
 import requests
+import serial
 from PIL import ImageTk, Image
 from keras.models import load_model
 import numpy as np
@@ -140,6 +141,18 @@ def send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, se
         # Send the email
         server.sendmail(sender_email, to_email, message.as_string())
 
+# Replace 'COM8' with the serial port connected to your Arduino
+ser = serial.Serial('COM8', 9600, timeout=1)
+
+def turn_relay_on():
+    ser.write(b'1')  # Send '1' to turn on the relay
+    print("Relay turned ON")
+
+
+def turn_relay_off():
+    ser.write(b'0')  # Send '0' to turn off the relay
+    print("Relay turned OFF")
+
 def classify(frame):
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
@@ -156,10 +169,16 @@ def classify(frame):
     print('pred', pred)
     label.configure(foreground='#FF0000', text=pred)
 
+    detected_object=pred
+    # Send the name of the detected object to Arduino
+    ser.write(detected_object.encode())  # Encode the string and send it over serial
+    print("Sent detected object:", detected_object)
+
+    # Control relay based on classification result
     if pred == 'Human':
-        user_input = '0'
+        turn_relay_off()
     else:
-        user_input = '1'
+        turn_relay_on()
 
     # Replace the following variables with your own values
     subject = str('Alert:')+str(pred)+str(' nearing your Farm')
@@ -173,28 +192,28 @@ def classify(frame):
     # Call the function to send the email
     send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, sender_password)
 
-    if user_input.isdigit():  # Check if the input is a digit
-        value = int(user_input)
-        nodeMCU_ip = "192.168.1.100"
-        if value == 0:
-            try:
-                relay_endpoint = "/deactivate_relay"  # Change this endpoint based on your NodeMCU code
-                # Send an HTTP GET request to control the relay
-                requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
-            except Exception as e:
-                print(f"Error: {e}")
-        elif value == 1:
-            try:
-                relay_endpoint = "/activate_relay"  # Change this endpoint based on your NodeMCU code
-                # Send an HTTP GET request to control the relay
-                requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
-
-            except Exception as e:
-                print(f"Error: {e}")
-        else:
-            print("Invalid input. Please enter 1 to activate or 0 to deactivate.")
-    else:
-        print("Exiting the script.")
+    # if user_input.isdigit():  # Check if the input is a digit
+    #     value = int(user_input)
+    #     nodeMCU_ip = "192.168.1.100"
+    #     if value == 0:
+    #         try:
+    #             relay_endpoint = "/deactivate_relay"  # Change this endpoint based on your NodeMCU code
+    #             # Send an HTTP GET request to control the relay
+    #             requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
+    #         except Exception as e:
+    #             print(f"Error: {e}")
+    #     elif value == 1:
+    #         try:
+    #             relay_endpoint = "/activate_relay"  # Change this endpoint based on your NodeMCU code
+    #             # Send an HTTP GET request to control the relay
+    #             requests.get(f"http://{nodeMCU_ip}{relay_endpoint}")
+    #
+    #         except Exception as e:
+    #             print(f"Error: {e}")
+    #     else:
+    #         print("Invalid input. Please enter 1 to activate or 0 to deactivate.")
+    # else:
+    #     print("Exiting the script.")
 
     # Clear the image after 5 seconds
     root.after(5000, clear_image)

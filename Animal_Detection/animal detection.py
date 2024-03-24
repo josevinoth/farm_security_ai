@@ -8,7 +8,7 @@ from keras.preprocessing import image
 model = MobileNetV2(weights='imagenet')
 
 # Load an image
-image_path = '../images/animals/bison/1e92525212.jpg'
+image_path = '../images/animals/Human/0 (11).png'
 img = image.load_img(image_path, target_size=(224, 224))
 x = image.img_to_array(img)
 x = np.expand_dims(x, axis=0)

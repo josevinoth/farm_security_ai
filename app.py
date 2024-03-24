@@ -10,8 +10,8 @@ import io
 from PIL import Image
 
 app = Flask(__name__)
-model = load_model('model/full_model_old.h5')
-model_path = 'model/full_model_old.h5'
+model = load_model('model/full_model.h5')
+model_path = 'model/full_model.h5'
 
 def preprocess_image(file):
     img = Image.open(file.stream).convert("RGB")
