@@ -142,7 +142,7 @@ def send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, se
         server.sendmail(sender_email, to_email, message.as_string())
 
 # Replace 'COM8' with the serial port connected to your Arduino
-ser = serial.Serial('COM8', 9600, timeout=1)
+ser = serial.Serial('COM5', 9600, timeout=1)
 
 def turn_relay_on():
     ser.write(b'1')  # Send '1' to turn on the relay

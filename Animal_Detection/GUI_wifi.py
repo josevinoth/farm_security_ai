@@ -175,7 +175,7 @@ def classify(frame):
 
     if user_input.isdigit():  # Check if the input is a digit
         value = int(user_input)
-        nodeMCU_ip = "192.168.1.100"
+        nodeMCU_ip = "192.168.1.15"
         if value == 0:
             try:
                 relay_endpoint = "/deactivate_relay"  # Change this endpoint based on your NodeMCU code
