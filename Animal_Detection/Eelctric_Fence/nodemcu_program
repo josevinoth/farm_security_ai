@@ -1,49 +1,73 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-const char* ssid = "walter_airtel";
-const char* password = "22741672";
-ESP8266WebServer server(80);
 
-// Relay pin
-const int relayPin = D7;  // Change to the actual pin connected to your relay
+  const int relayPin = 13;  // the pin that the relay is attached to
+  const int buzzerPin = 12; // The pin that the buzzer is attached to
+  // Set the LCD address and dimensions
+  const int lcdColumns = 16;
+  const int lcdRows = 2;
+  const int lcdAddress = 0x27;  // Change this address to match your LCD
 
-void setup() {
-  Serial.begin(115200);
+  LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi...");
+  void setup() {
+    // Initialize Serial communication
+    Serial.begin(9600);
+    Serial.println("Arduino Initialized");
+
+    // Initialize the relay pin as an output
+    pinMode(relayPin, OUTPUT);
+
+    // Turn off the relay initially
+    digitalWrite(relayPin, HIGH);
+
+    // Initialize the LCD
+    lcd.begin();  // Begin the LCD
+    lcd.backlight();  // Turn on the backlight
+    lcd.clear();      // Clear the screen
+    lcd.setCursor(0, 0);
+    lcd.print("Object: Object");  // Initially, no object detected
+
   }
-  Serial.println("Connected to WiFi");
 
-  // Setup relay pin
-  pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH);  // Initial state: relay is deactivated
+  void loop() {
+    if (Serial.available() > 0) {
+      String detected_object = ""; // Variable to store the received object name
 
-  // Setup HTTP endpoints to control the relay
-  server.on("/activate_relay", HTTP_GET, []() {
-    digitalWrite(relayPin, LOW);  // Activate the relay
-    server.send(200, "text/plain", "Relay activated");
-  });
+      // Read each character until the end of the string
+      while (Serial.available()) {
+        char c = Serial.read(); // Read one character
+        if (c != '0' && c != '1') {
+          detected_object += c;   // Append it to the string
+        }
+        delay(5);  // Small delay to allow time for the next character
+      }
 
-  server.on("/deactivate_relay", HTTP_GET, []() {
-    digitalWrite(relayPin, HIGH);  // Deactivate the relay
-    server.send(200, "text/plain", "Relay deactivated");
-  });
+      Serial.print("Received object: ");
+      Serial.println(detected_object);
 
-  // Start server
-  server.begin(80);
+      // Clear the LCD and print the received object directly
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Object Detected: ");
+      lcd.setCursor(0, 1);  // Move cursor to the start of the second line
+      lcd.print(detected_object);
 
-  // Print server started message with IP address
-  Serial.print("Server started at http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/");
-}
+      // Control the relay based on the detected object
+      if (detected_object == "Human") {
+        Serial.println("Turning off relay");
+        digitalWrite(relayPin, HIGH); // Turn off the relay
+      } else {
+        Serial.println("Turning on relay");
+        digitalWrite(relayPin, LOW); // Turn on the relay
+      }
 
-void loop() {
-  server.handleClient();
-  // Additional loop logic can be added here if needed
-}
+      // Turn on the buzzer when any object is detected (except 'Human')
+      Serial.println("Turning on buzzer");
+      digitalWrite(buzzerPin, HIGH); // Turn on the buzzer
+      delay(15000);                  // Wait for 30 seconds (30,000 milliseconds)
+      Serial.println("Turning off buzzer");
+      digitalWrite(buzzerPin, LOW);  // Turn off the buzzer
+    }
+  }
