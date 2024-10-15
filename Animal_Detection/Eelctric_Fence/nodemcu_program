@@ -23,7 +23,7 @@
     digitalWrite(relayPin, HIGH);
 
     // Initialize the LCD
-    lcd.begin();  // Begin the LCD
+    lcd.begin(16, 2);  // Begin the LCD
     lcd.backlight();  // Turn on the backlight
     lcd.clear();      // Clear the screen
     lcd.setCursor(0, 0);
@@ -66,7 +66,7 @@
       // Turn on the buzzer when any object is detected (except 'Human')
       Serial.println("Turning on buzzer");
       digitalWrite(buzzerPin, HIGH); // Turn on the buzzer
-      delay(15000);                  // Wait for 30 seconds (30,000 milliseconds)
+      delay(5000);                  // Wait for 30 seconds (30,000 milliseconds)
       Serial.println("Turning off buzzer");
       digitalWrite(buzzerPin, LOW);  // Turn off the buzzer
     }
