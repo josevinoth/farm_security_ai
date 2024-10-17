@@ -26,7 +26,7 @@ void setup() {
     digitalWrite(relayPin, HIGH);
 
     // Initialize the LCD
-    lcd.begin();  // Begin the LCD
+    lcd.begin(16,2);  // Begin the LCD
     lcd.backlight();  // Turn on the backlight
     lcd.clear();      // Clear the screen
     lcd.setCursor(0, 0);
@@ -58,43 +58,47 @@ void loop() {
 
         // Determine animal size and store it in animalSize variable
         String animalSize = ""; // Variable to store the animal size
-        if (detected_object.indexOf("small") >= 0) {
+        if (detected_object.indexOf("small") >= 0)
+        {
             animalSize = "small";
-        } else if (detected_object.indexOf("medium") >= 0) {
+        } else if (detected_object.indexOf("medium") >= 0)
+        {
             animalSize = "medium";
-        } else if (detected_object.indexOf("large") >= 0) {
+        } else if (detected_object.indexOf("large") >= 0)
+        {
             animalSize = "large";
         }
 
         // Check if "Human" is detected in the object string
-        if (detected_object.indexOf("Human") >= 0) {
+        if (detected_object.indexOf("Human") >= 0)
+        {
             // If "Human" is detected, turn off the relay
             Serial.println("Human detected: Turning OFF relay");
             digitalWrite(relayPin, HIGH); // Turn off the relay
-        } else {
+        } else
+        {
             // If any other animal is detected, turn on the relay
             Serial.println("Animal detected: Turning ON relay");
             digitalWrite(relayPin, LOW); // Turn on the relay
-
-            // Check animal size and adjust PWM voltage
-            if (animalSize == "small") {
-                // Set PWM voltage to 2.5V for small animals
-                analogWrite(pwmPin, (int)(2.5 / 5.0 * pwmMax));  // Scale 2.5V to PWM
-                Serial.println("Setting PWM to 2.5V (Small Animal)");
-                delay(3000);
-            } else if (animalSize == "medium") {
-                // Set PWM voltage to 3.5V for medium animals
-                analogWrite(pwmPin, (int)(3.5 / 5.0 * pwmMax));  // Scale 3.5V to PWM
-                Serial.println("Setting PWM to 3.5V (Medium Animal)");
-                delay(3000);
-            } else if (animalSize == "large") {
-                // Set PWM voltage to 4.5V for large animals
-                analogWrite(pwmPin, (int)(4.5 / 5.0 * pwmMax));  // Scale 4.5V to PWM
-                Serial.println("Setting PWM to 4.5V (Large Animal)");
-                delay(3000);
-            }
         }
-
+    // Check animal size and adjust PWM voltage
+        if (animalSize == "small")
+        {
+            // Set PWM voltage to 2.5V for small animals
+            analogWrite(pwmPin, (int)(2.5 / 5.0 * pwmMax));  // Scale 2.5V to PWM
+            Serial.println("Setting PWM to 2.5V (Small Animal)");
+            delay(3000);
+        } else if (animalSize == "medium") {
+            // Set PWM voltage to 3.5V for medium animals
+            analogWrite(pwmPin, (int)(3.5 / 5.0 * pwmMax));  // Scale 3.5V to PWM
+            Serial.println("Setting PWM to 3.5V (Medium Animal)");
+            delay(3000);
+        } else if (animalSize == "large") {
+            // Set PWM voltage to 4.5V for large animals
+            analogWrite(pwmPin, (int)(4.5 / 5.0 * pwmMax));  // Scale 4.5V to PWM
+            Serial.println("Setting PWM to 4.5V (Large Animal)");
+            delay(3000);
+        }
         // Buzzer code (remains unchanged)
         Serial.println("Turning on buzzer");
         digitalWrite(buzzerPin, HIGH); // Turn on the buzzer

@@ -12,7 +12,7 @@ import numpy as np
 import cv2
 
 # Load the trained model to classify Animals
-model = load_model('../Animal_Detection/model/full_model.h5')
+model = load_model('C:/Users/Franciska Fdo/PycharmProjects/farm_security_ai_v1.0/model/full_model.h5')
 
 # Dictionary to label all traffic signs class.
 classes = {
@@ -52,7 +52,7 @@ classes = {
     33: {'name': 'Hippopotamus', 'size': 'large'},
     34: {'name': 'Hornbill', 'size': 'medium'},
     35: {'name': 'Horse', 'size': 'large'},
-    36: {'name': 'Human', 'size': 'medium'},
+    36: {'name': 'Human', 'size': 'small'},
     37: {'name': 'Hummingbird', 'size': 'small'},
     38: {'name': 'Hyena', 'size': 'medium'},
     39: {'name': 'Jellyfish', 'size': 'small'},
@@ -143,8 +143,8 @@ def send_email(subject, body, to_email, smtp_server, smtp_port, sender_email, se
         # Send the email
         server.sendmail(sender_email, to_email, message.as_string())
 
-# Replace 'COM8' with the serial port connected to your Arduino
-ser = serial.Serial('COM7', 9600, timeout=1)
+# Replace 'COM6' with the serial port connected to your Arduino
+ser = serial.Serial('COM6', 9600, timeout=1)
 
 def turn_relay_on():
     ser.write(b'1')  # Send '1' to turn on the relay
